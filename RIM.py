@@ -15,10 +15,14 @@ class RIM:
         self.data = np.random.permutation(self.data)
         self.X = self.data[:,1:]
         self.y = self.data[:,0]
+
         self.cluster_by_k_means = defaultdict(list)
         self.alfa = alfa
         self.normalize()
         self.X = np.insert(self.X,0,1,axis=1)
+        print(self.X.shape)
+        self.lambdas = np.random.rand(self.X.shape[0], self.X.shape[1])
+        print(self.lambdas)
        # print(len(self.X))
 
     def normalize(self):
@@ -39,10 +43,18 @@ class RIM:
         mi = normalized_mutual_info_score(self.y, self.kmeans.labels_)
         print(mi)
         print(acc)
-    def count_distribution(self):
-        pass
+
+    def conditional_propability_of_y(self):
+        p = []
+        for j in range(len(self.X)):
+            #print(np.sum(np.exp(np.dot(self.lambdas,self.X[j]))))
+            p.append(np.exp(np.dot(self.lambdas[j],self.X[j]))/np.sum(np.exp(np.dot(self.lambdas,self.X[j]))))
+
+        #print(p)
+
+
 #X = np.array([[1,1,1],[2,3,4], [4,5,6]])
 r = RIM(X,y,3,10)
 # print(r.X)
 r.initialize()
-r.test()
+r.conditional_propability_of_y()
